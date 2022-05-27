@@ -177,7 +177,7 @@ function authenticate(req, res, next) {
 // sends session info to the client
 function validateSession(req, res) {
 	// console.log(req.session);
-	console.log("**** VERSION 1 ****");
+	console.log("**** VERSION 1 (CLONED) ****");
 	console.log("**** PRACTICE WITH --AMEND ****");
 	res.set("Content-Type", "application/json");
 	res.status(200).send(JSON.stringify(req.session));
