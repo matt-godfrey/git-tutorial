@@ -1,12 +1,12 @@
 
-const dotenv = require("dotenv");
-dotenv.config();
+// const dotenv = require("dotenv");
+// dotenv.config();
 let mongo = require('mongodb');
 let MongoClient = mongo.MongoClient;
 let db;
 
 
-MongoClient.connect(process.env.MONGO_URI, function(err, client) {
+MongoClient.connect("mongodb://localhost:27017", function(err, client) {
   if(err) throw err;	
 
   db = client.db('portfolio');

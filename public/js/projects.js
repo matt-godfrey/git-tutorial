@@ -22,8 +22,8 @@ function authenticate() {
             
 		}
 	}
-	// req.open("GET", `http://localhost:3000/authenticate`);
-	req.open("GET", `https://matt-godfrey-portfolio.herokuapp.com/authenticate`);
+	req.open("GET", `http://localhost:3000/authenticate`);
+	// req.open("GET", `https://matt-godfrey-portfolio.herokuapp.com/authenticate`);
 	req.setRequestHeader("Accept", "application/json");
 	req.send();
 }

@@ -2,14 +2,15 @@ const express = require('express');
 const path = require("path");
 const session = require('express-session');
 const pug = require("pug");
-const dotenv = require("dotenv");
-dotenv.config();
+// const dotenv = require("dotenv");
+// dotenv.config();
 // var cors = require('cors')
 MongoDBStore = require("connect-mongo");
 const mc = require("mongodb").MongoClient;
 let app = express();
 let db;
 app.locals.db = {};
+const quotes = [];
 // const cors = require('cors');
 // const corsOptions ={
 //     origin:'http://localhost:3000', 
@@ -31,19 +32,19 @@ app.use(express.json()); // parse JSON in request
 app.use(express.urlencoded({extended: true})); // parses form data
 
 const store = new MongoDBStore({
-	// mongoUrl: "mongodb://localhost/portfolio",
-	mongoUrl: process.env.MONGO_URI,
+	mongoUrl: "mongodb://localhost/portfolio",
+	// mongoUrl: process.env.MONGO_URI,
 	collection: "sessions"
 })
 store.on("error", (err) => { console.log(err) })
-app.set('trust proxy', 1);
+// app.set('trust proxy', 1);
 app.use(session({
 	name: "userSession",
 	secret: "A very cool secret",
 	// store: store,
 	store: store,
 	resave: true,
-	cookie: {secure: true},
+	// cookie: {secure: true},
 	saveUninitialized: false
 }))
 
@@ -56,6 +57,8 @@ app.post("/login", authenticate);
 app.get("/logout", logout);
 
 app.get("/authenticate", validateSession);
+
+
 
 function sendRegister(req, res, next) {
     res.render("register");
@@ -71,12 +74,12 @@ function checkPasswords(req, res, next) {
 
 	const regex = new RegExp("\s+", "g");
 
-	// if (regex.test(pass1)) {
-	// 	res.render("register", {
-	// 		error: "Please enter a valid password (no spaces)"
-	// 	})
-	// 	return;
-	// }
+	if (regex.test(pass1)) {
+		res.render("register", {
+			error: "Please enter a valid password (no spaces)"
+		})
+		return;
+	}
 
 	// if (!pass1 || !pass2) {
 	// 	return;
@@ -143,13 +146,15 @@ function authenticate(req, res, next) {
 	if (req.session.loggedin) {
 		res.render("loginError");
 	}
-	// console.log(req)
+	
 	db.collection("users").findOne({username: req.body.username}, function(err, user) {
 		if (err) throw err;
 		// log in the user if username found in database and
 		// the password they've entered is correct
 		if (!err && user) {
+			console.log(user);
 			if (user.password === req.body.password) {
+				console.log(req.session)
 				req.session.loggedin = true;
 				req.session.userId = user._id;
 				req.session.username = user.username;
@@ -188,7 +193,7 @@ function logout(req, res, next) {
 
 //Connect to database
 
-mc.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, }, function(err, client) {
+mc.connect("mongodb://localhost:27017", function(err, client) {
 	if (err) {
 		console.log("Error in connecting to database");
 		console.log(err);
@@ -201,6 +206,6 @@ mc.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: t
     console.log("Connected to database: portfolio");
 	
 	//Only start listening now, when we know the database is available
-	app.listen(process.env.PORT || 3000);
+	app.listen(3000);
     console.log("Server listening on port 3000");
 })

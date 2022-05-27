@@ -12,7 +12,7 @@ function authenticate() {
 	req.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			currentSession = JSON.parse(req.responseText);
-		
+			console.log(currentSession);
 			if (currentSession.loggedin) {
 				generateHeader();
 			}
@@ -20,8 +20,8 @@ function authenticate() {
             
 		}
 	}
-	// req.open("GET", `http://localhost:3000/authenticate`);
-	req.open("GET", `https://matt-godfrey-portfolio.herokuapp.com/authenticate`);
+	req.open("GET", `http://localhost:3000/authenticate`);
+	// req.open("GET", `https://matt-godfrey-portfolio.herokuapp.com/authenticate`);
 	req.setRequestHeader("Accept", "application/json");
 	req.send();
 }
